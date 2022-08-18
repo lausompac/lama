@@ -1,4 +1,4 @@
-import { IGetShowsDBDTO, IPurchaseDBDTO, IShowDB, Show } from "../models/Show"
+import { ICancelTicketDBDTO, IGetShowsDBDTO, IPurchaseDBDTO, IShowDB, Show } from "../models/Show"
 import { BaseDatabase } from "./BaseDatabase"
 
 
@@ -12,6 +12,35 @@ export class ShowDatabase extends BaseDatabase {
             .select()
             .where({ starts_at })
 
+
+        return result[0]
+    }
+
+    verifyTicket = async (user_id: string, show_id: string) => {
+        const result = await BaseDatabase
+            .connection(ShowDatabase.TABLE_TICKETS)
+            .select()
+            .where({ user_id, show_id })
+
+        return result[0]
+    }
+
+    verifySoldOut = async (show_id: string): Promise <boolean | undefined> => {
+        const result = await BaseDatabase
+            .connection(ShowDatabase.TABLE_SHOWS)
+            .select("tickets")
+            .where({ id: show_id })
+
+        if (result[0].tickets === 0) {
+            return true
+        }
+    }
+
+    getShowById = async (show_id: string): Promise<IShowDB | undefined> => {
+        const result = await BaseDatabase
+            .connection(ShowDatabase.TABLE_SHOWS)
+            .select()
+            .where({ id: show_id })
 
         return result[0]
     }
@@ -54,7 +83,8 @@ export class ShowDatabase extends BaseDatabase {
     }
 
     buyTicket = async (purchase: IPurchaseDBDTO) => {
-        const purchaseDB: IPurchaseDBDTO = {
+        const purchaseDB = {
+            id: purchase.purchase_id,
             show_id: purchase.show_id,
             user_id: purchase.user_id
         }
@@ -67,6 +97,23 @@ export class ShowDatabase extends BaseDatabase {
             .connection(ShowDatabase.TABLE_SHOWS)
             .where("id", "=", `${purchase.show_id}`)
             .decrement("tickets", 1)
+    }
+
+    cancelTicket = async (purchase: ICancelTicketDBDTO ) => {
+        const cancelTicketDB = {
+            user_id: purchase.user_id,
+            show_id: purchase.show_id,
+        }
+
+        await BaseDatabase
+            .connection(ShowDatabase.TABLE_TICKETS)
+            .where({ user_id: cancelTicketDB.user_id, show_id: cancelTicketDB.show_id })
+            .delete()
+
+        await BaseDatabase
+            .connection(ShowDatabase.TABLE_SHOWS)
+            .where("id", "=", `${purchase.show_id}`)
+            .increment("tickets", 1)    
     }
 
 }

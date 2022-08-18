@@ -80,6 +80,12 @@ export interface IBuyTicketInputDTO {
 }
 
 export interface IPurchaseDBDTO {
+    purchase_id: string,
+    show_id: string,
+    user_id: string
+}
+
+export interface ICancelTicketDBDTO {
     show_id: string,
     user_id: string
 }

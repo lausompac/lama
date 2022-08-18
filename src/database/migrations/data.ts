@@ -19,13 +19,7 @@ export const shows: IShowDB[] = [
     }
 ]
 
-export const tickets: ITicketDB[] = [
-    {
-        id: "301",
-        show_id: "201",
-        user_id: "bb9b7ee8-ae4b-4bd1-9bd6-e7e21594399b"
-    }
-]
+
 
 
 

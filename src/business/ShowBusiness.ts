@@ -1,16 +1,15 @@
 import { ShowDatabase } from "../database/ShowDatabase";
 import { ConflictError } from "../errors/ConflictError";
+import { NotFoundError } from "../errors/NotFoundError";
 import { RequestError } from "../errors/RequestError";
 import { UnauthorizedError } from "../errors/UnauthorizedError";
-import { IBuyTicketInputDTO, IGetShowsDBDTO, IGetShowsInputDTO, IShowInputDTO, Show } from "../models/Show";
+import { IBuyTicketInputDTO, ICancelTicketDBDTO, IGetShowsDBDTO, IGetShowsInputDTO, IShowInputDTO, Show } from "../models/Show";
 import { Authenticator } from "../services/Authenticator";
-import { HashManager } from "../services/HashManager";
 import { IdGenerator } from "../services/IdGenerator";
 
 export class ShowBusiness {
     constructor(
         private showDatabase: ShowDatabase = new ShowDatabase(),
-        private hashManager: HashManager = new HashManager(),
         private authenticator: Authenticator = new Authenticator(),
         private idGenerator: IdGenerator = new IdGenerator()
     ) { }
@@ -131,8 +130,89 @@ export class ShowBusiness {
             throw new RequestError("Invalid token");
         }
 
-        const purchase = { user_id: payload.id, show_id: showId };
-        const showDB = await this.showDatabase.buyTicket(purchase);
+        const show = await this.showDatabase.getShowById(showId);
+
+        if (!show) {
+            throw new NotFoundError("Show not found");
+        }
+
+        const isAlreadyBought = await this.showDatabase.verifyTicket(payload.id, showId);
+
+        if (isAlreadyBought) {
+            throw new ConflictError("You already bought a ticket for this show. Only one ticket per show is allowed");
+        }
+
+        const isSoldOut = await this.showDatabase.verifySoldOut(showId);
+
+        if (isSoldOut) {
+            throw new ConflictError("Show already sold out");
+        }
+
+        const purchaseId = this.idGenerator.generate();
+        const purchase = {
+            purchase_id: purchaseId,
+            user_id: payload.id,
+            show_id: showId
+        };
+
+        await this.showDatabase.buyTicket(purchase);
+
+        const response = {
+            message: "Ticket bought successfully",
+        }
+
+        return response;
+
+
+    }
+
+    cancelTicket = async (input: IBuyTicketInputDTO) => {
+        const { token, showId } = input;
+
+        if (!token) {
+            throw new RequestError("Missing token");
+        }
+
+        if (!showId) {
+            throw new RequestError("Missing showId");
+        }
+
+        const payload = this.authenticator.getTokenPayload(token);
+
+        if (!payload) {
+            throw new RequestError("Invalid token");
+        }
+        
+        const show = await this.showDatabase.getShowById(showId);
+
+        if (!show) {
+            throw new NotFoundError("Show not found");
+        }
+        
+        const isAlreadyBought = await this.showDatabase.verifyTicket(payload.id, showId);
+        
+        if (!isAlreadyBought) {
+            throw new ConflictError("You haven't bought a ticket for this show");
+        }
+        const isUserAdmin = payload.role === "ADMIN";
+        const isUserOwner = payload.id === isAlreadyBought.user_id;
+
+        if (!isUserAdmin && !isUserOwner) {
+            throw new UnauthorizedError("You must be an admin to do this");
+        }
+        
+        const cancelTicket: ICancelTicketDBDTO = {
+            user_id: payload.id,
+            show_id: showId
+        }
+
+        await this.showDatabase.cancelTicket(cancelTicket);
+
+        const response = {
+            message: "Ticket cancelled successfully",
+        }
+
+        return response;
 
     }
 

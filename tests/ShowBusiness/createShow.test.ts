@@ -8,7 +8,6 @@ import { ShowDatabaseMock } from "../mocks/ShowDatabaseMock"
 describe("ShowBusiness test", () => {
     const showBusiness = new ShowBusiness(
         new ShowDatabaseMock(),
-        new HashManagerMock(),
         new AuthenticatorMock()
     )
 

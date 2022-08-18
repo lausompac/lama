@@ -1,7 +1,7 @@
 import { BaseDatabase } from "../BaseDatabase"
 import { ShowDatabase } from "../ShowDatabase"
 import { UserDatabase } from "../UserDatabase"
-import { shows, tickets, users } from "./data"
+import { shows, users } from "./data"
 
 class Migrations extends BaseDatabase {
     execute = async () => {
@@ -65,9 +65,6 @@ class Migrations extends BaseDatabase {
             .connection(ShowDatabase.TABLE_SHOWS)
             .insert(shows)
 
-        await BaseDatabase
-            .connection(ShowDatabase.TABLE_TICKETS)
-            .insert(tickets)
     }
 }
 
