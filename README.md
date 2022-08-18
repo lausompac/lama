@@ -1,2 +1,2 @@
-# lama
+# LAMA 🎸
 Labenu Music Awards
