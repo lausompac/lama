@@ -15,30 +15,64 @@ estruturado utilizando PROGRAMAÇÃO ORIENTADA A OBJETOS(POO).
 
 ## 📄Documentação
 
+LINK POSTMAN
 
+Os endpoints também podem ser testados diretamente no projeto através do arquivo ``requests.rest``
 
 ## 🚀 Deploy
 
+LINK HEROKU
+
+## ✔️ Features
+
+👤 Cadastro/Login
+
+- [x] O sistema deve permitir o registro de usuário. Para se cadastrar, é necessário fornecer um nome, um email válido e uma senha. Você pode ser um cliente (usuário normal) ou um administrador do sistema (admin). Por padrão, o novo cadastro é registrado como cliente. O login do usuário acontece automaticamente após o cadastro.
+- [x] Para realizar o login, basta informar seu e-mail e a sua senha. O retorno deve conter o token de autenticação do usuário.
+
+🎙 Registrar Atração
+
+- [x] O sistema deve registrar todas as atrações que participarão dos cinco dias de festival. Para uma atração ser criada, é preciso fornecer nome e a data que a mesma se apresentará. Duas Atrações não podem tocar em um mesmo dia. Somente administradores podem registrar atrações.
+
+🎸 Detalhes da Atração
+
+- [x] Cada atração recebe um ID, nome, data e quantidade de ingressos disponíveis. 
+
+🎟️ Reserva de ingressos
+
+- [x] O sistema deve possibilitar a reserva de ingressos. Cada usuários pode reservar apenas 1 ingresso por show.
+- [x] O sistema também deve permitir o cancelamento de reserva. Administradores tem permissão para cancelar qualquer reserva, enquanto cada cliente pode cancelar apenas sua própria compra.
 
 
-## ⚙️ Funcionalidades do Projeto
+<h2 id="back"> 🎲 Rodando o Backend (servidor)</h2>
 
-O sistema conta com recursos que envolvem o gerenciamento de cadastro de turmas, cadastro de estudantes e modificações internas. 
+### Pre-Requisitos
 
-Informações das turmas:
+- Para rodar o projeto você vai precisar do [Node.JS](https://nodejs.org/en/download/),
+- Uma instancia de um banco de dados MySQL
+- Um editor para trabalhar com o código como [VSCode](https://code.visualstudio.com/)
 
-- Id da turma;
-- Nome;
-- Módulo (de 0 à 6 - sendo que turmas no módulo zero são as que não iniciaram ainda)
+### Como instalar e Rodar
+* Para baixar o projeto
+```
+1. git clone https://github.com/lausompac/lama.git
+2. cd lama
+```
+* Para instalar e rodar o projeto
+```
+3. npm install
+4. npm dev
+    ou
+3. yarn install
+4. yarn dev
+```
+* Para rodar os testes 
+```
+5. npm test
+5. yarn test
+```
 
-Informações dos estudantes:
-
-- Id do usuário;
-- Nome;
-- E-mail;
-- Aniversário;
-- Hobbies;
-- Classe em que está matriculado;
+Crie um arquivo ```.env``` na raiz do projeto e preencha as variáveis com seus dados do banco de dados MySQL. É muito importante para a execução do servidor.
 
 
 ## 🛠 Tecnologias utilizadas
