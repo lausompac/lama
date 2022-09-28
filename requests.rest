@@ -31,7 +31,7 @@ Content-Type: application/json
 }
 
 ### Get shows (corrigir o search)
-GET http://localhost:3003/shows 
+GET http://localhost:3003/shows?search=Mari
 Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImJiOWI3ZWU4LWFlNGItNGJkMS05YmQ2LWU3ZTIxNTk0Mzk5YiIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTY2MDc3NDMxNywiZXhwIjoxNjYwODYwNzE3fQ._xKtAqBWukPa7pPT3juBx17PMEiS1NRwFm7vvhKzx_g
 
 ### Buy ticket
